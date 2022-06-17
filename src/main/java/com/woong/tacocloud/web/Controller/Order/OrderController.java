@@ -1,4 +1,4 @@
-package com.woong.tacocloud.Controller.Order;
+package com.woong.tacocloud.web.Controller.Order;
 
 import com.woong.tacocloud.domain.Order;
 import lombok.extern.slf4j.Slf4j;
