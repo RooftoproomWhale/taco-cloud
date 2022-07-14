@@ -4,8 +4,10 @@ import com.woong.tacocloud.domain.Ingredient;
 import com.woong.tacocloud.domain.Ingredient.Type;
 import com.woong.tacocloud.domain.Order;
 import com.woong.tacocloud.domain.Taco;
+import com.woong.tacocloud.domain.User;
 import com.woong.tacocloud.domain.repository.IngredientRepository;
 import com.woong.tacocloud.domain.repository.TacoRepository;
+import com.woong.tacocloud.domain.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,17 +28,18 @@ import java.util.stream.Collectors;
 public class DesignTacoController
 {
     private final IngredientRepository ingredientRepository;
-
     private final TacoRepository tacoRepo;
+    private final UserRepository userRepo;
 
     @Autowired
-    public DesignTacoController(IngredientRepository ingredientRepository, TacoRepository tacoRepo) {
+    public DesignTacoController(IngredientRepository ingredientRepository, TacoRepository tacoRepo, UserRepository userRepo) {
         this.ingredientRepository = ingredientRepository;
         this.tacoRepo = tacoRepo;
+        this.userRepo = userRepo;
     }
 
     @GetMapping
-    public String showDesignForm(Model model)
+    public String showDesignForm(Model model, Principal principal)
     {
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepository.findAll().forEach(ingredients::add);
@@ -46,7 +50,9 @@ public class DesignTacoController
             model.addAttribute(type.toString().toLowerCase(),filterByType(ingredients,type));
         }
 
-        model.addAttribute("taco", new Taco());
+        String username = principal.getName();
+        User user = userRepo.findByUsername(username);
+        model.addAttribute("user",user);
 
         return "design";
     }

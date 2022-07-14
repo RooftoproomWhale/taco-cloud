@@ -60,4 +60,7 @@ public class Order implements Serializable
     {
         this.placedAt = new Date();
     }
+
+    @ManyToOne
+    private User user;
 }
